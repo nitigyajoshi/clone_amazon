@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 String uri = 'https://clone-amazon1.herokuapp.com';
 
 //https://clone-amazon1.herokuapp.com
-//'http://192.168.1.103:3000';
+//ip adress:3000';
 class Global {
   static const appBarGradient = LinearGradient(
     colors: [
