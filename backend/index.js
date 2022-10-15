@@ -12,10 +12,9 @@ app.use(authRouter);
 app.use(adminRouter);
 app.use(productRouter);
 app.use(userRouter);
-const db="mongodb+srv://nitigya:Khandada@977@cluster0.hijbzwt.mongodb.net/?retryWrites=true&w=majority";
-//app.use(express.json());
+
 //connecting to mongodb
-mongoose.connect("mongodb+srv://nitigya:Khandada%40977@cluster0.hijbzwt.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://nitigya:<enter you password removing angular brackets ie.<> >@cluster0.hijbzwt.mongodb.net/?retryWrites=true&w=majority")
 .then(()=>{
     console.log('sucessfully connected')
 }).catch(e=>{
