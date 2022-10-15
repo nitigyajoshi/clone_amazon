@@ -1,30 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:untitled/provider/user_provider.dart';
-import 'package:untitled/screen/search_screen.dart';
-import 'package:untitled/widget/address_box.dart';
-import 'package:untitled/widget/corsoul_image.dart';
-import 'package:untitled/widget/deal_of_the_day.dart';
-import 'package:untitled/widget/top_category.dart';
+import 'package:untitled/screen/product_detail_screen.dart';
 
-import 'constant/global_variable.dart';
+import '../constant/global_variable.dart';
+import '../model/product_model.dart';
+import '../service/search_service.dart';
+import '../widget/address_box.dart';
+import '../widget/loder.dart';
+import '../widget/searched_product.dart';
 
-class Home extends StatefulWidget {
-  static const String routeName = '/home';
-  const Home({Key? key}) : super(key: key);
+class SearchScreen extends StatefulWidget {
+  static const String routeName = '/search-screen';
+  final String searchQuery;
+  const SearchScreen({
+    Key? key,
+    required this.searchQuery,
+  }) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _HomeState extends State<Home> {
+class _SearchScreenState extends State<SearchScreen> {
+  List<Product>? products;
+  final SearchServices searchServices = SearchServices();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSearchedProduct();
+  }
+
+  fetchSearchedProduct() async {
+    products = await searchServices.fetchSearchedProduct(
+        context: context, searchQuery: widget.searchQuery);
+    setState(() {});
+  }
+
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -98,18 +115,33 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: const [
-            AddressBox(),
-            SizedBox(height: 10),
-            TopCategories(),
-            SizedBox(height: 10),
-            CarouselImage(),
-            DealOfDay(),
-          ],
-        ),
-      ),
+      body: products == null
+          ? const Loader()
+          : Column(
+              children: [
+                const AddressBox(),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: products!.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            ProductDetail.routeName,
+                            arguments: products![index],
+                          );
+                        },
+                        child: SearchedProduct(
+                          product: products![index],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

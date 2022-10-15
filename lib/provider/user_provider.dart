@@ -1,23 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:untitled/model/user_model.dart';
 
-class UserProvider extends ChangeNotifier{
-
-  User _user=User(id: '',
+class UserProvider extends ChangeNotifier {
+  User _user = User(
+      id: '',
       name: '',
       email: '',
       password: '',
       address: '',
       type: '',
-      token: ''
-  );
-  User get user=>_user;
-  void setUser(String user){
-    _user=User.fromJson(user);
+      token: '',
+      cart: []);
+  User get user => _user;
+  void setUser(String user) {
+    _user = User.fromJson(user);
     notifyListeners();
-
-
   }
 
-
+  void setUserFromModel(User user) {
+    _user = user;
+    notifyListeners();
+  }
 }

@@ -1,14 +1,12 @@
 const express=require('express');
 const User=require('../model/email');
-const auth=require('../middleware/auth');
-
 //const mongoose=require('mongoose');
 const bcryptjs=require('bcryptjs');
-const bcr=require('bcrypt');
+//const bcr=require('bcrypt');
 const authRouter=express.Router();
 const jwt=require("jsonwebtoken");
 // authRouter.get("/ok",(req,res)=>{
-//     res.send("hhkjhjkj");
+//     res.send("hhkjhjkjk");
 // })
 //signup...
 
@@ -29,6 +27,8 @@ try{
         status: 'succes',
         data: req.body,
       })
+
+
     if(existingUser){
         return res.status(400).json({
     msg:'user already exist'
@@ -36,16 +36,16 @@ try{
         })
     }
     //var salt=bcr.genSalt(2);
-    const hashedPassword=await bcr.hash(password,8)
- //const hashedPassword=await bcryptjs.hash(password,salt);
+    //const hashedPassword=await bcr.hash(password,8)
+ const hashedPassword=await bcryptjs.hash(password,8);
 
 let user=new User({
     name,email,password:hashedPassword
 });
 
 user=await user.save();
-res.json({user:user});//or res.json(user);both same..
-res.send("hhbhjhjhj.");}
+res.json({user:user});//or .res.json(user);both same..
+res.send("hhbj");}
 catch(e){
    return res.status(500).json({error:e.message});
 }
@@ -60,51 +60,30 @@ const user=await User.findOne({email});
 if(!user){
 return res.status(400).json({msg:"user .with this email not exist."});
 }
-const isMatch=bcr.compare(password,user.password );
-                                                //        );
-//const isMatch=await bcryptjs.compare(password,user.password);
+//const isMatch=bcr.compare(password,user.password);
+//function(err, res) {
+// if(err) {
+// return res.json({error :e.message});
+// }   } );
+//                                                                );
+const isMatch=await bcryptjs.compare(password,user.password);
+
 if(!isMatch){
-return res.status(400).json({error:'.incorrect password'});
+
+return res.status(400).json({error:'.incorrect password.'});
 }
 
 const token=jwt.sign({id:user._id},"passwordKey");
-res.json({token,
-...
-user
-._doc
-});
+res.json({token,...user._doc});
 
 }
 catch(e){
-return res.status(500).json({//error:'hrk'
+return res.status(500).json({//error:'hkk'
 error:e.message
-});}
-//making auth router public that can be access from any file
 });
-
-authRouter.post("/token",async(req,res)=>{
-try{
-const token=req.header('x-auth-token');
-if(!token) return res.json(false);
-const verified=jwt.verify(token,"passwordKey");
-if(!verified)return res.json(false);
-const user=await User.findById(verified.id);
-if(!user)return res.json(false);
-//return
- res.json(true);
-
-}catch(e){
-res.status(500).json({error:e.message});
 }
-});
 
 
-authRouter.get('/',auth,async(req,res)=>{
-const user=await User.findById(req.user.token);
-res.json({
-//...
-user
-//._doc
-,token:req.token});
+//making auth router public that can be access from any file
 });
 module.exports=authRouter;

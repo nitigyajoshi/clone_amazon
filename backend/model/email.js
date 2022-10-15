@@ -1,5 +1,5 @@
 const mongose=require('mongoose');
-
+const { productSchema } = require("./product");
 var Schema = mongose.Schema;
 const userSchema=Schema({
 name:{
@@ -16,7 +16,7 @@ validate:{
         var validRegex =  /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 return value.match(validRegex)
 },
-message:'enter valid email'
+message:'enter. valid email'
 
 }
 },
@@ -42,7 +42,16 @@ type:{
     type:String,
 
 },
+cart:[
+{
+product:productSchema,
+quantity:{
+    type:Number,
+    required:true
+}
 
+}
+]
 });
 
 // const User=mongose.model(
